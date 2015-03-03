@@ -35,6 +35,14 @@ parseFoo.parse("quux") // throws Parsers.Failure
 ```
 
 ```java
+// Alternative version of the above
+Parser<String> parseFooOrBar = 
+    regex("[a-z]+").
+    map(m -> m.group()).
+    filter(t -> t.equals("foo") || t.equals("bar"));
+```
+
+```java
 Parser<Pair<Integer, Integer>> parsePlus = 
     parseInteger.
     skip(string("+")).
