@@ -36,7 +36,7 @@ parseFoo.parse("quux") // throws Parsers.Failure
 
 ```java
 // Alternative version of the above
-Parser<String> parseFooOrBar = 
+Parser<String> parseFooOrBar2 = 
     regex("[a-z]+").
     map(m -> m.group()).
     filter(t -> t.equals("foo") || t.equals("bar"));
