@@ -57,7 +57,7 @@ parseList.parse("1,2,4,8,16,32") // returns [1, 2, 4, 8, 16, 32]
 ```
 
 ```java
-Parser<String> parseToken = regex("\\s*([a-z0-9]+)\\w\\s*").map(m -> m.group(1));
+Parser<String> parseToken = regex("\\s*([a-z0-9]+)\\s*").map(m -> m.group(1));
 Parser<String> keyword(String name) { return parseToken.filter(t -> t.equals(name)); }
 
 Parser<<Pair<Pair<String, String>, Optional<String>>> parseIf = 
