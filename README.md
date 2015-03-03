@@ -42,3 +42,8 @@ Parser<Pair<Integer, Integer>> parsePlus =
 Parser<Integer> parseAndCompute = parsePlus.map(match((x, y) -> x + y));
 parseAndCompute.parse("7+3") // returns 10
 ```
+
+```java
+Parser<List<Integer>> parseList = parseInteger.zeroOrMore(string(","));
+parseAndCompute.parse("1,2,4,8,16,32") // returns [1, 2, 4, 8, 16, 32]
+```
