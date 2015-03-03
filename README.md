@@ -1,5 +1,5 @@
 # parsercombinator
-A parser combinator for Java 8. Proof of concept.
+A parser combinator for Java 8. Working, but mostly a proof of concept.
 
 ```java
 import static dk.ahnfelt.parsercombinator.Parsers.*;
