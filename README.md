@@ -23,8 +23,8 @@ parseFoo.parse("foo7") // returns ("foo", 7)
 ```
 
 ```java
-Parser<Integer> parseSkipFooN = skip(parseFoo).then(parseInteger);
-parseFoo.parse("foo7") // returns 7
+Parser<Integer> parseFooN2 = skip(parseFoo).then(parseInteger);
+parseFooN2.parse("foo7") // returns 7
 ```
 
 ```java
