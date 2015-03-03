@@ -71,6 +71,6 @@ parseIf.parse("if x then y else z end") // returns (("x", "y"), Optional["z"])
 Parser<String> parseIfAndCompute = 
     parseIf.map(match(x, y, z) -> x.equals("true") ? y : z)
 
-parseIf.parse("if true then y else z end") // returns "y"
-parseIf.parse("if false then y else z end") // returns Optional["z"]
+parseIfAndCompute.parse("if true then y else z end") // returns "y"
+parseIfAndCompute.parse("if false then y else z end") // returns Optional["z"]
 ```
