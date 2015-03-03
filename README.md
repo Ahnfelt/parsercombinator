@@ -40,5 +40,5 @@ Parser<Pair<Integer, Integer>> parsePlus =
     skip(string("+")).
     then(parseInteger);
 Parser<Integer> parseAndCompute = parsePlus.map(match((x, y) -> x + y));
-parsePlus.parse("7+3") // returns 10
+parseAndCompute.parse("7+3") // returns 10
 ```
