@@ -12,7 +12,7 @@ parseFoo.parse("bar") // throws Parsers.Failure
 ```
 
 ```java
-Parser<String> parseIntegerMatch = regex("[0-9]+").map(m -> Integer.parseInt(m.group()));
+Parser<Integer> parseIntegerMatch = regex("[0-9]+").map(m -> Integer.parseInt(m.group()));
 parseFoo.parse("42") // returns "42"
 parseFoo.parse("bar") // throws Parsers.Failure
 ```
@@ -28,7 +28,7 @@ parseFoo.parse("foo7") // returns 7
 ```
 
 ```java
-Parser<Integer> parseFooOrBar = choice(string("foo"), string("bar"));
+Parser<String> parseFooOrBar = choice(string("foo"), string("bar"));
 parseFoo.parse("foo") // returns "foo"
 parseFoo.parse("bar") // returns "bar"
 parseFoo.parse("quux") // throws Parsers.Failure
