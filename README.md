@@ -55,3 +55,22 @@ parseAndCompute.parse("7+3") // returns 10
 Parser<List<Integer>> parseList = parseInteger.zeroOrMore(string(","));
 parseList.parse("1,2,4,8,16,32") // returns [1, 2, 4, 8, 16, 32]
 ```
+
+```java
+Parser<String> parseToken = regex("\\s*([a-z0-9]+)\\w\\s*").map(m -> m.group(1));
+Parser<String> keyword(String name) { return parseToken.filter(t -> t.equals(name)); }
+
+Parser<<Pair<Pair<String, String>, Optional<String>>> parseIf = 
+    skip(keyword("if")).then(parseToken).
+    skip(keyword("then")).then(parseToken).
+    then(skip(keyword("else")).then(parseToken).optional()).
+    skip(keyword("end"));
+
+parseIf.parse("if x then y else z end") // returns (("x", "y"), Optional["z"])
+
+Parser<String> parseIfAndCompute = 
+    parseIf.map(match(x, y, z) -> x.equals("true") ? y : z)
+
+parseIf.parse("if true then y else z end") // returns "y"
+parseIf.parse("if false then y else z end") // returns Optional["z"]
+```
