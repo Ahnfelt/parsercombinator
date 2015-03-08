@@ -1,4 +1,6 @@
-package dk.ahnfelt.parsercombinator;
+package dk.ahnfelt.parsercombinator.examples;
+
+import dk.ahnfelt.parsercombinator.Parser;
 
 import java.util.Arrays;
 import java.util.function.Function;
@@ -8,7 +10,15 @@ import static dk.ahnfelt.parsercombinator.Parsers.*;
 public class Main {
 
     public static void main(String[] arguments) throws Failure {
-        ifStatement();
+
+        //String input = "{ \"name\": \"anna\", \"age\": 21, \"interests\": [\"diving\", \"programming\"] }";
+        String input = "true";
+
+        Json output = JsonParser.jsonP.parse(input);
+
+        System.out.println(output);
+
+        // ifStatement()
     }
 
     public static void ifStatement() throws Failure {

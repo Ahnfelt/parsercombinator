@@ -3,6 +3,7 @@ package dk.ahnfelt.parsercombinator;
 import java.util.Arrays;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,8 +15,9 @@ public class Parsers {
     public static <B> Parser<B> failure(String cause) { return in -> { throw Failure.exception; }; }
     @SafeVarargs public static <B> Parser<B> choice(Parser<B> parser, Parser<B>... parsers) { return Arrays.asList(parsers).stream().reduce(parser, Parser::or); }
     public static SkipParser skip(Parser<?> parser) { return new SkipParser(parser); }
-    public static <Void> Parser<Void> begin() { return regex("^").map(m -> null); }
-    public static <Void> Parser<Void> end() { return regex("$").map(m -> null); }
+    public static <B> Parser<B> then(Supplier<Parser<B>> parser) { return in -> parser.get().parse(in); }
+    public static Parser<Void> begin() { return regex("^").map(m -> null); }
+    public static Parser<Void> end() { return regex("$").map(m -> null); }
     public static Parser<String> string(String string) { return regex(Pattern.quote(string)).map(MatchResult::group); }
     public static Parser<MatchResult> regex(String regex) { return regex(Pattern.compile(regex)); }
     public static Parser<MatchResult> regex(Pattern pattern) { return new RegexParser(pattern); }
@@ -111,7 +113,7 @@ public class Parsers {
 
     // Package private stuff
 
-    static class SkipParser {
+    public static class SkipParser {
         private final Parser<?> parser;
 
         public SkipParser(Parser<?> parser) {
@@ -127,7 +129,7 @@ public class Parsers {
         }
     }
 
-    static class RegexParser implements Parser<MatchResult> {
+    public static class RegexParser implements Parser<MatchResult> {
         private Pattern pattern;
 
         public RegexParser(Pattern pattern) {
