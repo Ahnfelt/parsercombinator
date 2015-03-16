@@ -20,9 +20,11 @@ public interface Parser<A> {
     }
 
     public default Optional<A> tryParse(Parsers.Input in) {
+        int offset = in.offset;
         try {
             return Optional.of(parse(in));
         } catch (Parsers.Failure e) {
+            in.offset = offset;
             return Optional.empty();
         }
     };
@@ -35,22 +37,23 @@ public interface Parser<A> {
         return in -> then(that.get()).parse(in);
     }
 
-    public default <U> Parser<A> skip(Parser<U> that) {
+    public default Parser<A> skip(Parser<?> that) {
         return in -> { A result = parse(in); that.parse(in); return result; };
     }
 
-    public default <U> Parser<A> skip(Supplier<Parser<U>> that) {
+    public default Parser<A> skip(Supplier<Parser<?>> that) {
         return in -> skip(that.get()).parse(in);
     }
 
     public default Parser<A> or(Parser<A> that) {
         return new Parser<A>() {
             public A parse(Parsers.Input in) throws Parsers.Failure {
-                Parsers.Input input = in.remember();
+                int offset = in.offset;
                 try {
                     return Parser.this.parse(in);
                 } catch (Parsers.Failure e) {
-                    return that.parse(input);
+                    in.offset = offset;
+                    return that.parse(in);
                 }
             }
         };
@@ -81,11 +84,13 @@ public interface Parser<A> {
 
     public default Parser<List<A>> zeroOrMore(Parser<?> separator) {
         return in -> {
-            List<A> result = new ArrayList<A>();
-            Optional<A> element;
-            while((element = tryParse(in)).isPresent()) {
+            List<A> result = new ArrayList<>();
+            Optional<A> element = tryParse(in);
+            if(element.isPresent()) {
                 result.add(element.get());
-                if(!separator.tryParse(in).isPresent()) break;
+                while(separator.tryParse(in).isPresent()) {
+                    result.add(parse(in));
+                }
             }
             return result;
         };
@@ -105,12 +110,10 @@ public interface Parser<A> {
 
     public default Parser<List<A>> oneOrMore(Parser<?> separator) {
         return in -> {
-            List<A> result = new ArrayList<A>();
+            List<A> result = new ArrayList<>();
             result.add(parse(in));
-            Optional<A> element;
-            Parser<A> parser = Parsers.skip(separator).then(this);
-            while((element = parser.tryParse(in)).isPresent()) {
-                result.add(element.get());
+            while(separator.tryParse(in).isPresent()) {
+                result.add(parse(in));
             }
             return result;
         };

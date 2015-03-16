@@ -9,8 +9,8 @@ import dk.ahnfelt.parsercombinator.Parser;
 // An example of a full parser
 public class JsonParser {
 
-    static Parser<Void> token(String keyword) {
-        return regex(Pattern.quote(keyword) + "[\\s\\r\\n]*").map(m -> null);
+    static Parser<Unit> token(String keyword) {
+        return regex(Pattern.quote(keyword) + "[\\s\\r\\n]*").map(m -> Unit.instance);
     }
 
     static Parser<Json> valueP =
@@ -27,7 +27,7 @@ public class JsonParser {
             map(m -> /*StringEscapeUtils.unescapeEcmaScript(*/ m.group(1) /*)*/);
 
     static Parser<Double> numberP =
-            regex("(-?(0|[1-9][0-9]*)([.][0-9]+)([eE][+-]?[0-9]*)?)[\\s\\r\\n]*").
+            regex("(-?(0|[1-9][0-9]*)([.][0-9]+)?([eE][+-]?[0-9]*)?)[\\s\\r\\n]*").
             map(m -> Double.parseDouble(m.group(1)));
 
     static Parser<Pair<String, Json>> fieldP =
