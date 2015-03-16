@@ -9,8 +9,8 @@ import dk.ahnfelt.parsercombinator.Parser;
 // An example of a full parser
 public class JsonParser {
 
-    static Parser<Unit> token(String keyword) {
-        return regex(Pattern.quote(keyword) + "[\\s\\r\\n]*").map(m -> Unit.instance);
+    static Parser<?> token(String keyword) {
+        return regex(Pattern.quote(keyword) + "[\\s\\r\\n]*");
     }
 
     static Parser<Json> valueP =

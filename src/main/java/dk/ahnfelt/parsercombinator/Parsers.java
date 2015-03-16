@@ -10,14 +10,14 @@ import java.util.regex.Pattern;
 
 public class Parsers {
 
-    public static Parser<Unit> empty() { return success(Unit.instance); }
+    public static Parser<?> empty() { return success(unit); }
     public static <B> Parser<B> success(B value) { return in -> value; }
     public static <B> Parser<B> failure(String cause) { return in -> { throw Failure.exception; }; }
     @SafeVarargs public static <B> Parser<B> choice(Parser<B> parser, Parser<B>... parsers) { return Arrays.asList(parsers).stream().reduce(parser, Parser::or); }
     public static SkipParser skip(Parser<?> parser) { return new SkipParser(parser); }
     public static <B> Parser<B> then(Supplier<Parser<B>> parser) { return in -> parser.get().parse(in); }
-    public static Parser<Unit> begin() { return regex("^").map(m -> Unit.instance); }
-    public static Parser<Unit> end() { return regex("$").map(m -> Unit.instance); }
+    public static Parser<?> begin() { return regex("^").map(m -> unit); }
+    public static Parser<?> end() { return regex("$").map(m -> unit); }
     public static Parser<String> string(String string) { return regex(Pattern.quote(string)).map(MatchResult::group); }
     public static Parser<MatchResult> regex(String regex) { return regex(Pattern.compile(regex)); }
     public static Parser<MatchResult> regex(Pattern pattern) { return new RegexParser(pattern); }
@@ -107,12 +107,8 @@ public class Parsers {
     @FunctionalInterface public interface Function8<A, B, C, D, E, F, G, H, R> { public R apply(A a, B b, C c, D d, E e, F f, G g, H h); }
     @FunctionalInterface public interface Function9<A, B, C, D, E, F, G, H, I, R> { public R apply(A a, B b, C c, D d, E e, F f, G g, H h, I i); }
 
-    // A type with exactly one instance (if you disregard null).
-    // Void can't be used because Optional doesn't accept null values.
-    public static class Unit {
-        private Unit() {}
-        public static Unit instance = new Unit();
-    }
+    // A value to use when no result is needed from a parser (eg. for Parser<?>)
+    public static Object unit = new Object();
 
     // Package private stuff
 
@@ -124,7 +120,7 @@ public class Parsers {
         }
 
         public SkipParser skip(Parser<?> that) {
-            return new SkipParser(in -> { parser.parse(in); that.parse(in); return Unit.instance; });
+            return new SkipParser(in -> { parser.parse(in); that.parse(in); return Parsers.unit; });
         }
 
         public <U> Parser<U> then(Parser<U> that) {

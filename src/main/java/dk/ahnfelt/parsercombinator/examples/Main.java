@@ -12,7 +12,6 @@ public class Main {
     public static void main(String[] arguments) throws Failure {
 
         String input = "{ \"name\": \"anna\", \"age\": 21, \"interests\": [\"diving\", \"programming\"] }";
-        //String input = "[1,1]";
 
         Json output = JsonParser.jsonP.parse(input);
 
